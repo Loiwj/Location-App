@@ -11,7 +11,9 @@ import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -20,7 +22,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.locaitionapp.ui.theme.LocaitionAppTheme
@@ -55,6 +59,7 @@ fun LocationDisplay(
     context: Context
 ) {
     val location = viewModel.location.value
+    val address = location?.let { LocationUtils.reverseGeocodeLocation(it) }
 
     val requestPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions(),
@@ -101,11 +106,11 @@ fun LocationDisplay(
         verticalArrangement = Arrangement.Center
     ) {
         if(location != null){
-            Text("Address: ${location.latitude} ${location.longitude}" )
+            Text("Address: ${location.latitude} ${location.longitude} \n ${address}", textAlign = TextAlign.Center )
         }else {
             Text("Location not available")
         }
-
+        Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = {
             if (LocationUtils.hasLocationPermission(context)) {
                 //Permission already granted update the location
